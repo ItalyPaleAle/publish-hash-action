@@ -1,0 +1,40 @@
+name: 'Publish Hash Tweet Action'
+description: 'Send a tweet with the hash of the binary files compiled by your Action as proof of integrity'
+author: 'Alessandro Segala (ItalyPaleAle)'
+inputs:
+  file:
+    required: true
+    description: Path to the file to hash
+  # Consumer API Key
+  # If unset, checks the TWITTER_CONSUMER_KEY environmental variable
+  consumer-key:
+    required: false
+    description: >
+      Consumer API Key, available in the "Keys and tokens" section of your application in the Twitter Developer portal
+  # Consumer API Secret
+  # If unset, checks the TWITTER_CONSUMER_SECRET environmental variable
+  consumer-secret:
+    required: false
+    description: >
+      Consumer API Secret Key, available in the "Keys and tokens" section of your application in the Twitter Developer portal
+  # Application Access Token
+  # If unset, checks the TWITTER_ACCESS_TOKEN environmental variable
+  access-token:
+    required: false
+    description: >
+      Application Access Token (for OAuth 1.0), available in the "Keys and tokens" section of your application in the Twitter Developer portal
+  # Application Access Token Secret
+  # If unset, checks the TWITTER_ACCESS_TOKEN_SECRET environmental variable
+  access-token-secret:
+    required: false
+    description: >
+      Application Access Token Secret (for OAuth 1.0), available in the "Keys and tokens" section of your application in the Twitter Developer portal
+outputs:
+  tweet-id:
+    description: ID of the tweet that was published
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+branding:
+  icon: hash
+  color: blue
