@@ -4306,18 +4306,13 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
   });
 
   // src/index.ts
+  var import_core2 = __toModule(require_core());
+
+  // src/worker.ts
   var import_core = __toModule(require_core());
   var import_twitter_api_client = __toModule(require_dist());
   var import_crypto = __toModule(__require("crypto"));
   var import_fs = __toModule(__require("fs"));
-  (async () => {
-    try {
-      const twitterUrl = await new Worker().Start();
-      console.log(twitterUrl);
-    } catch (err) {
-      (0, import_core.setFailed)(err.message || err);
-    }
-  })();
   var Worker = class {
     constructor() {
       this.file = this.getRequiredInput("file");
@@ -4360,4 +4355,16 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
       return val;
     }
   };
+  var worker_default = Worker;
+
+  // src/index.ts
+  (async () => {
+    try {
+      const worker = new worker_default();
+      const twitterUrl = await worker.Start();
+      console.log(twitterUrl);
+    } catch (err) {
+      (0, import_core2.setFailed)(err.message || err);
+    }
+  })();
 })();
