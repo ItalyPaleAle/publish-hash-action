@@ -4350,7 +4350,7 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
     async Start() {
       const hash = await this.hashFile(this.file);
       const res = await this.twitterClient.tweets.statusesUpdate({
-        status: this.tweetText(hash)
+        status: this.tweetText(this.file, hash)
       });
       const tweetUrl = "https://twitter.com/" + res.user.name + "/status/" + res.id_str;
       (0, import_core.setOutput)("hash", hash);
@@ -4362,8 +4362,8 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
         tweetUrl
       };
     }
-    tweetText(hash) {
-      const fileName = (0, import_path.basename)(hash);
+    tweetText(file, hash) {
+      const fileName = (0, import_path.basename)(file);
       const commit = this.commitSha.substr(0, 7);
       const runLink = [
         this.serverUrl,

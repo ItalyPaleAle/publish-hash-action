@@ -61,7 +61,7 @@ export default class Worker {
 
         // Create a Tweet
         const res = await this.twitterClient.tweets.statusesUpdate({
-            status: this.tweetText(hash),
+            status: this.tweetText(this.file, hash),
         })
 
         // Set the output
@@ -79,12 +79,13 @@ export default class Worker {
 
     /**
      * Returns the text for the tweet to send
+     * @param file File to hash
      * @param hash Hash of the file
      * @returns Content for the tweet
      */
-    private tweetText(hash: string): string {
+    private tweetText(file: string, hash: string): string {
         // Get file name
-        const fileName = basename(hash)
+        const fileName = basename(file)
 
         // Short commit hash
         const commit = this.commitSha.substr(0, 7)
