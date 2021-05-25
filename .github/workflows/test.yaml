@@ -1,0 +1,24 @@
+name: Test Action
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test_action:
+    runs-on: ubuntu-latest
+    name: Test Action
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Publish hash on Twitter
+        # Uses an action in the root directory
+        uses: ./
+        id: publish-tweet
+        with:
+          file: test/kristaps-ungurs-15QcwtTr230-unsplash.jpg
+          consumer-key: ${{ secrets.TWITTER_CONSUMER_KEY }}
+          consumer-secret: ${{ secrets.TWITTER_CONSUMER_SECRET }}
+          access-token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          access-token-secret: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+      - name: Get the tweet
+        run: 'echo "The tweet was posted at ${{ steps.publish-tweet.outputs.tweet-url }} (ID: ${{ steps.publish-tweet.outputs.tweet-id }})"'

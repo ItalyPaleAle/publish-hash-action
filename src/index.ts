@@ -44,6 +44,7 @@ class Worker {
         const tweetUrl = 'https://twitter.com/' + res.user.name + '/status/' + res.id_str
 
         // Set the output
+        setOutput('tweet-id', res.id_str)
         setOutput('tweet-url', tweetUrl)
 
         return tweetUrl
