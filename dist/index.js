@@ -4317,10 +4317,10 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
     constructor() {
       this.file = this.getRequiredInput("file");
       this.twitterClient = new import_twitter_api_client.TwitterClient({
-        apiKey: this.getRequiredInput("consumer-key"),
-        apiSecret: this.getRequiredInput("consumer-secret"),
-        accessToken: this.getRequiredInput("access-token"),
-        accessTokenSecret: this.getRequiredInput("access-token-secret")
+        apiKey: this.getRequiredInput("consumer-key", "TWITTER_CONSUMER_KEY"),
+        apiSecret: this.getRequiredInput("consumer-secret", "TWITTER_CONSUMER_SECRET"),
+        accessToken: this.getRequiredInput("access-token", "TWITTER_ACCESS_TOKEN"),
+        accessTokenSecret: this.getRequiredInput("access-token-secret", "TWITTER_ACCESS_TOKEN_SECRET")
       });
     }
     async Start() {
@@ -4346,8 +4346,11 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
         read.pipe(hash);
       });
     }
-    getRequiredInput(name) {
-      const val = (0, import_core.getInput)(name);
+    getRequiredInput(name, env) {
+      let val = (0, import_core.getInput)(name);
+      if (!val && env) {
+        val = process.env[env] || "";
+      }
       if (!val) {
         throw Error("Input " + name + " is required");
       }
