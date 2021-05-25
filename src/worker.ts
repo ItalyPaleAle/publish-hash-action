@@ -14,10 +14,16 @@ export default class Worker {
         // Get the input data and ensure it's not empty, and init the Twitter client
         this.file = this.getRequiredInput('file')
         this.twitterClient = new TwitterClient({
-            apiKey: this.getRequiredInput('consumer-key'),
-            apiSecret: this.getRequiredInput('consumer-secret'),
-            accessToken: this.getRequiredInput('access-token'),
-            accessTokenSecret: this.getRequiredInput('access-token-secret'),
+            apiKey: this.getRequiredInput('consumer-key', 'TWITTER_CONSUMER_KEY'),
+            apiSecret: this.getRequiredInput(
+                'consumer-secret',
+                'TWITTER_CONSUMER_SECRET'
+            ),
+            accessToken: this.getRequiredInput('access-token', 'TWITTER_ACCESS_TOKEN'),
+            accessTokenSecret: this.getRequiredInput(
+                'access-token-secret',
+                'TWITTER_ACCESS_TOKEN_SECRET'
+            ),
         })
     }
 
@@ -33,7 +39,7 @@ export default class Worker {
         const res = await this.twitterClient.tweets.statusesUpdate({
             status: 'Hash is ' + hash,
         })
-        
+
         // Set the output
         const tweetUrl = 'https://twitter.com/' + res.user.name + '/status/' + res.id_str
         setOutput('tweet-id', res.id_str)
@@ -62,13 +68,17 @@ export default class Worker {
     }
 
     /**
-     * Gets an input from the Action and ensures it's not empty
+     * Gets an input from the Action and ensures it's not empty, with an optional fallback on env vars
      * @param name Name of the input
+     * @param env Name of the environmental variable to fall back to
      * @returns The value from the input of the Action
      * @throws Throws if the input is empty
      */
-    private getRequiredInput(name: string): string {
-        const val = getInput(name)
+    private getRequiredInput(name: string, env?: string): string {
+        let val = getInput(name)
+        if (!val && env) {
+            val = process.env[env] || ''
+        }
         if (!val) {
             throw Error('Input ' + name + ' is required')
         }
