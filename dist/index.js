@@ -4328,7 +4328,6 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
       const res = await this.twitterClient.tweets.statusesUpdate({
         status: "Hash is " + hash
       });
-      console.log(res);
       const tweetUrl = "https://twitter.com/" + res.user.name + "/status/" + res.id_str;
       (0, import_core.setOutput)("tweet-id", res.id_str);
       (0, import_core.setOutput)("tweet-url", tweetUrl);
@@ -4362,7 +4361,6 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
     try {
       const worker = new worker_default();
       const twitterUrl = await worker.Start();
-      console.log(twitterUrl);
     } catch (err) {
       (0, import_core2.setFailed)(err.message || err);
     }

@@ -33,10 +33,9 @@ export default class Worker {
         const res = await this.twitterClient.tweets.statusesUpdate({
             status: 'Hash is ' + hash,
         })
-        console.log(res)
-        const tweetUrl = 'https://twitter.com/' + res.user.name + '/status/' + res.id_str
-
+        
         // Set the output
+        const tweetUrl = 'https://twitter.com/' + res.user.name + '/status/' + res.id_str
         setOutput('tweet-id', res.id_str)
         setOutput('tweet-url', tweetUrl)
 

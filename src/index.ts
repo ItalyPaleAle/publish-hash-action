@@ -7,7 +7,6 @@ import Worker from './worker'
     try {
         const worker = new Worker()
         const twitterUrl = await worker.Start()
-        console.log(twitterUrl)
     } catch (err) {
         setFailed(err.message || err)
     }

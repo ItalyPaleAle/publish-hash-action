@@ -11,7 +11,7 @@ try {
         outfile: outdir + 'index.js',
         bundle: true,
         platform: 'node',
-        target: 'es2017',
+        target: 'es2018',
         charset: 'utf8',
         color: true,
         format: 'iife',
