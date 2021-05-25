@@ -1,4 +1,4 @@
-import {getInput, setOutput} from '@actions/core'
+import {getInput, setOutput, setFailed} from '@actions/core'
 import {TwitterClient} from 'twitter-api-client'
 import {createHash} from 'crypto'
 import {createReadStream} from 'fs'
@@ -6,8 +6,12 @@ import {createReadStream} from 'fs'
 // Main function
 ;(async () => {
     // Start the worker
-    const twitterUrl = await new Worker().Start()
-    console.log(twitterUrl)
+    try {
+        const twitterUrl = await new Worker().Start()
+        console.log(twitterUrl)
+    } catch (err) {
+        setFailed(err.message || err)
+    }
 })()
 
 /**

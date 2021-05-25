@@ -2,7 +2,6 @@
 import esbuild from 'esbuild'
 import rimraf from 'rimraf'
 
-const mode = process.env.NODE_ENV || 'production'
 const outdir = 'dist/'
 
 try {
@@ -16,11 +15,6 @@ try {
         charset: 'utf8',
         color: true,
         format: 'iife',
-    }
-    if (mode == 'production') {
-        // In production mode, minify the output and enable sourcemaps
-        esbuildOpts.minify = true
-        esbuildOpts.sourcemap = true
     }
 
     // Clean the output directory

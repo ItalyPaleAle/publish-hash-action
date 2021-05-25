@@ -6,7 +6,6 @@
   "private": true,
   "scripts": {
     "build": "node build.mjs",
-    "dev": "NODE_ENV=development node build.mjs",
     "check": "tsc --project ./ --noEmit",
     "format": "prettier --write '**/*.{ts,js,mjs,cjs,css,json}'"
   },
