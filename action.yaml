@@ -30,8 +30,8 @@ inputs:
     description: >
       Application Access Token Secret (for OAuth 1.0), available in the "Keys and tokens" section of your application in the Twitter Developer portal
 outputs:
-  tweet-id:
-    description: ID of the tweet that was published
+  tweet-url:
+    description: URL of the tweet that was published
 runs:
   using: 'node12'
   main: 'dist/index.js'
