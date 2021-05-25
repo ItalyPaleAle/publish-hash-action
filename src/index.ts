@@ -6,7 +6,11 @@ import Worker from './worker'
     // Start the worker
     try {
         const worker = new Worker()
-        const twitterUrl = await worker.Start()
+        const res = await worker.Start()
+        // Print the result
+        console.log('Base64-encoded hash is: ' + res.hash)
+        console.log('Tweet ID: ' + res.tweetId)
+        console.log('Tweet URL: ' + res.tweetUrl)
     } catch (err) {
         setFailed(err.message || err)
     }

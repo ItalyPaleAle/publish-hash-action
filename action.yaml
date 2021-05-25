@@ -34,6 +34,8 @@ outputs:
     description: ID of the tweet that was published
   tweet-url:
     description: URL of the tweet that was published
+  hash:
+    description: Hash of the file
 runs:
   using: 'node12'
   main: 'dist/index.js'

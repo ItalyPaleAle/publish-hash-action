@@ -4313,6 +4313,14 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
   var import_twitter_api_client = __toModule(require_dist());
   var import_crypto = __toModule(__require("crypto"));
   var import_fs = __toModule(__require("fs"));
+  var import_path = __toModule(__require("path"));
+
+  // src/utils.ts
+  function BufToBase64Url(buf) {
+    return buf.toString("base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+  }
+
+  // src/worker.ts
   var Worker = class {
     constructor() {
       this.file = this.getRequiredInput("file");
@@ -4322,16 +4330,53 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
         accessToken: this.getRequiredInput("access-token", "TWITTER_ACCESS_TOKEN"),
         accessTokenSecret: this.getRequiredInput("access-token-secret", "TWITTER_ACCESS_TOKEN_SECRET")
       });
+      this.repoName = process.env.GITHUB_REPOSITORY || "";
+      if (!this.repoName) {
+        throw Error("Could not find variable GITHUB_REPOSITORY in the environment");
+      }
+      this.serverUrl = process.env.GITHUB_SERVER_URL || "";
+      if (!this.serverUrl) {
+        throw Error("Could not find variable GITHUB_SERVER_URL in the environment");
+      }
+      this.commitSha = process.env.GITHUB_SHA || "";
+      if (!this.commitSha) {
+        throw Error("Could not find variable GITHUB_SHA in the environment");
+      }
+      this.actionRunId = process.env.GITHUB_RUN_ID || "";
+      if (!this.actionRunId) {
+        throw Error("Could not find variable GITHUB_RUN_ID in the environment");
+      }
     }
     async Start() {
       const hash = await this.hashFile(this.file);
       const res = await this.twitterClient.tweets.statusesUpdate({
-        status: "Hash is " + hash
+        status: this.tweetText(hash)
       });
       const tweetUrl = "https://twitter.com/" + res.user.name + "/status/" + res.id_str;
+      (0, import_core.setOutput)("hash", hash);
       (0, import_core.setOutput)("tweet-id", res.id_str);
       (0, import_core.setOutput)("tweet-url", tweetUrl);
-      return tweetUrl;
+      return {
+        hash,
+        tweetId: res.id_str,
+        tweetUrl
+      };
+    }
+    tweetText(hash) {
+      const fileName = (0, import_path.basename)(hash);
+      const commit = this.commitSha.substr(0, 7);
+      const runLink = [
+        this.serverUrl,
+        this.repoName,
+        "actions",
+        "runs",
+        this.actionRunId
+      ].join("/");
+      const text = "In repo " + this.repoName + ", the hash of file " + fileName + " at commit " + commit + " is:\n" + hash;
+      if (text.length > 255) {
+        throw Error("The tweet is too long");
+      }
+      return text + "\n" + runLink;
     }
     hashFile(file) {
       const read = (0, import_fs.createReadStream)(file);
@@ -4341,7 +4386,7 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
           reject(err);
         });
         read.on("end", () => {
-          resolve(hash.digest("hex"));
+          resolve(BufToBase64Url(hash.digest()));
         });
         read.pipe(hash);
       });
@@ -4363,7 +4408,10 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
   (async () => {
     try {
       const worker = new worker_default();
-      const twitterUrl = await worker.Start();
+      const res = await worker.Start();
+      console.log("Base64-encoded hash is: " + res.hash);
+      console.log("Tweet ID: " + res.tweetId);
+      console.log("Tweet URL: " + res.tweetUrl);
     } catch (err) {
       (0, import_core2.setFailed)(err.message || err);
     }
